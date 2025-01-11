@@ -3,13 +3,11 @@ import { useAuthStore } from './store';
 
 const api = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Add request interceptor to include auth token
 api.interceptors.request.use(
   (config) => {
     const token = useAuthStore.getState().token;
@@ -18,30 +16,21 @@ api.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    console.error('Request Error:', error);
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Add response interceptor to handle auth errors
 api.interceptors.response.use(
-  (response) => {
-    return response;
-  },
+  (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
-      useAuthStore.getState().logout();
+    if (!error.response) {
+      return Promise.reject({ message: 'Network error' });
     }
-    
-    const errorMessage = error.response?.data?.message || 'An error occurred';
-    console.error('API Error:', {
-      status: error.response?.status,
-      message: errorMessage,
-      error: error
-    });
-    
-    return Promise.reject(error);
+
+    if (error.response.status === 401) {
+      useAuthStore.getState().clearAuth();
+    }
+
+    return Promise.reject(error.response.data || error);
   }
 );
 
