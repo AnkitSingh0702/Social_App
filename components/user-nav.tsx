@@ -14,11 +14,11 @@ import { useRouter } from "next/navigation";
 import { PostDialog } from "./post-dialog";
 
 export function UserNav() {
-  const { user, logout } = useAuthStore();
+  const { user, clearAuth } = useAuthStore();
   const router = useRouter();
 
   const handleLogout = () => {
-    logout();
+    clearAuth();
     router.push("/login");
   };
 
