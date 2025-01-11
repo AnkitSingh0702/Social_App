@@ -70,10 +70,11 @@ export function Posts() {
               <PlaceholderImage />
             ) : (
               <img
-                src={`${process.env.NEXT_PUBLIC_API_URL}${post.image}`}
+                src={post.image}
                 alt={post.caption}
                 className="absolute inset-0 w-full h-full object-contain"
                 onError={() => handleImageError(post._id)}
+                loading="lazy"
               />
             )}
           </div>

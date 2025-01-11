@@ -14,7 +14,8 @@ import { useRouter } from "next/navigation";
 import { PostDialog } from "./post-dialog";
 
 export function UserNav() {
-  const { user, clearAuth } = useAuthStore();
+  const user = useAuthStore((state) => state.user);
+  const clearAuth = useAuthStore((state) => state.clearAuth);
   const router = useRouter();
 
   const handleLogout = () => {
